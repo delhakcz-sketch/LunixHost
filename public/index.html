@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lunix Host Panel</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #090b12;
+    color: white;
+}
+
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    position: fixed;
+    background: #0e111b;
+    border-right: 1px solid #222638;
+    padding: 25px;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+    color: #a855f7;
+    margin-bottom: 40px;
+}
+
+.nav {
+    display: block;
+    color: #a5a8b8;
+    padding: 14px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+.nav.active, .nav:hover {
+    background: #211735;
+    color: #c084fc;
+}
+
+.main {
+    margin-left: 230px;
+    padding: 35px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    font-size: 28px;
+}
+
+.user {
+    background: #171b27;
+    padding: 12px 18px;
+    border-radius: 12px;
+    color: #c084fc;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card {
+    background: #111521;
+    border: 1px solid #24293a;
+    border-radius: 16px;
+    padding: 23px;
+}
+
+.card p {
+    color: #9399ad;
+    margin-bottom: 12px;
+}
+
+.card h2 {
+    font-size: 28px;
+}
+
+.server {
+    background: #111521;
+    border: 1px solid #24293a;
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 20px;
+}
+
+.server-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.server-name {
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.status {
+    color: #f87171;
+    background: #301c24;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.server-info {
+    color: #969bad;
+    margin-top: 15px;
+    line-height: 1.8;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.start {
+    background: #9333ea;
+    color: white;
+}
+
+.stop {
+    background: #252a38;
+    color: white;
+}
+
+.console {
+    margin-top: 30px;
+    background: #0b0e16;
+    border: 1px solid #24293a;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.console h3 {
+    margin-bottom: 15px;
+}
+
+.console-text {
+    color: #8b91a5;
+    font-family: monospace;
+    line-height: 1.8;
+}
+
+@media (max-width: 800px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <div class="logo">✦ LUNIX HOST</div>
+    <a class="nav active" href="#">Dashboard</a>
+    <a class="nav" href="#">Moje servery</a>
+    <a class="nav" href="#">Konzole</a>
+    <a class="nav" href="#">Nastavení</a>
+</div>
+
+<div class="main">
+
+    <div class="header">
+        <h1>Dashboard</h1>
+        <div class="user">👤 Admin</div>
+    </div>
+
+    <div class="stats">
+        <div class="card">
+            <p>Moje servery</p>
+            <h2>1</h2>
+        </div>
+
+        <div class="card">
+            <p>Aktivní servery</p>
+            <h2 id="activeCount">0</h2>
+        </div>
+
+        <div class="card">
+            <p>Hosting status</p>
+            <h2 style="color:#a855f7">ONLINE</h2>
+        </div>
+    </div>
+
+    <h2>Moje servery</h2>
+
+    <div class="server">
+        <div class="server-top">
+            <div class="server-name">Minecraft Survival</div>
+            <div class="status" id="status">OFFLINE</div>
+        </div>
+
+        <div class="server-info">
+            Software: Paper<br>
+            Verze: 1.21.11<br>
+            RAM: 4 GB<br>
+            Adresa: localhost
+        </div>
+
+        <div class="buttons">
+            <button class="start" onclick="startServer()">START</button>
+            <button class="stop" onclick="stopServer()">STOP</button>
+        </div>
+    </div>
+
+    <div class="console">
+        <h3>Console</h3>
+        <div class="console-text" id="console">
+            [Lunix] Panel byl načten.<br>
+            [System] Čekám na akci...
+        </div>
+    </div>
+
+</div>
+
+<script>
+let running = false;
+
+function startServer() {
+    if (running) return;
+    running = true;
+
+    document.getElementById("status").innerText = "ONLINE";
+    document.getElementById("status").style.color = "#4ade80";
+    document.getElementById("status").style.background = "#153126";
+    document.getElementById("activeCount").innerText = "1";
+
+    document.getElementById("console").innerHTML +=
+        "<br>[Lunix] Server spuštěn (simulace).";
+}
+
+function stopServer() {
+    if (!running) return;
+    running = false;
+
+    document.getElementById("status").innerText = "OFFLINE";
+    document.getElementById("status").style.color = "#f87171";
+    document.getElementById("status").style.background = "#301c24";
+    document.getElementById("activeCount").innerText = "0";
+
+    document.getElementById("console").innerHTML +=
+        "<br>[Lunix] Server zastaven (simulace).";
+}
+</script>
+
+</body>
+</html>
